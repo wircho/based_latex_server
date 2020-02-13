@@ -7,7 +7,7 @@ import logging.handlers
 import traceback
 import pymongo
 from based_latex import save_latex_image
-from bottle import run, get, post, request
+from bottle import run, get, post, request, static_file
 
 handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
 handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
@@ -47,5 +47,9 @@ def latex():
 			return element
 	except:
 		return {"error": traceback.format_exc()}
+
+@route('/images/<filename>')
+def server_static(filename):
+	return static_file(filename, root='images')
 
 run(host = "0.0.0.0", port = 80)
