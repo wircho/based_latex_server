@@ -5,7 +5,7 @@ import traceback
 from based_latex import save_latex_image
 from bottle import run, get, post, request
 
-handler = logging.handlers.RotatingFileHandler("../logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
+handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
 handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
