@@ -13,10 +13,10 @@ logger.addHandler(handler)
 @get('/latex')
 def latex():
 	try:
-  	expression = request.query['expression']
-  	prefix, suffix = save_latex_image(expression, "test.png")
-  	return {"prefix": prefix, "suffix": suffix}
-  except:
-  	return {"error": traceback.format_exc()}
+		expression = request.query['expression']
+		prefix, suffix = save_latex_image(expression, "test.png")
+		return {"prefix": prefix, "suffix": suffix}
+	except:
+		return {"error": traceback.format_exc()}
 
 run(host = "0.0.0.0", port = 80)
