@@ -1,5 +1,6 @@
 import json
 import logging
+import logging.handlers
 import traceback
 from based_latex import save_latex_image
 from bottle import run, get, post, request
