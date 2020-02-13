@@ -48,7 +48,7 @@ def latex():
 	except:
 		return {"error": traceback.format_exc()}
 
-@route('/images/<filename>')
+@get('/images/<filename>')
 def server_static(filename):
 	return static_file(filename, root='images')
 
