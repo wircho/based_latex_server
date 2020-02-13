@@ -1,7 +1,11 @@
+import os
 import json
 import logging
+import random
+import string
 import logging.handlers
 import traceback
+import pymongo
 from based_latex import save_latex_image
 from bottle import run, get, post, request
 
@@ -11,12 +15,36 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
+client = pymongo.MongoClient()
+db = client['latex']
+expressions = db["expressions"]
+
+def random_string(length = 10):
+    """Generate a random string of fixed length """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
+if not os.path.isdir("images"): os.makedirs("images")
+
+def new_image_path():
+	path = None
+	while path is None or os.path.isfile(path):
+		path = os.path.join("images", random_string() + ".png")
+	return path
+
 @get('/latex')
 def latex():
 	try:
 		expression = request.query['expression']
-		prefix, suffix = save_latex_image(expression, "test.png")
-		return {"prefix": prefix, "suffix": suffix}
+		elements = expressions.find({"_id": expression})
+		if len(elements) > 0:
+			return elements[0]
+		else:
+			path = new_image_path()
+			prefix, suffix = save_latex_image(expression, path)
+			element = {"_id": expression, "prefix": prefix, "suffix": suffix, "path": path}
+			expressions.insert(element)
+			return element
 	except:
 		return {"error": traceback.format_exc()}
 
