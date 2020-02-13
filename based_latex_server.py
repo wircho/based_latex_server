@@ -36,9 +36,9 @@ def new_image_path():
 def latex():
 	try:
 		expression = request.query['expression']
-		elements = expressions.find({"_id": expression})
-		if len(elements) > 0:
-			return elements[0]
+		element = expressions.find_one({"_id": expression})
+		if element is not None:
+			return element
 		else:
 			path = new_image_path()
 			prefix, suffix = save_latex_image(expression, path)
