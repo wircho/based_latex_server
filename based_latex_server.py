@@ -7,7 +7,7 @@ import logging.handlers
 import traceback
 import pymongo
 from based_latex import save_latex_image
-from bottle import run, get, post, request, static_file, ServerAdapter, default_app
+from bottle import run, get, post, request, response, static_file, ServerAdapter, default_app
 from cheroot import wsgi
 from cheroot.ssl.builtin import BuiltinSSLAdapter
 import ssl
@@ -28,6 +28,7 @@ with open("config.json", "r") as file: config = json.load(file)
 server_name = config["server"]
 certfile_path = config["certfile"]
 keyfile_path = config["keyfile"]
+origins = config["origins"]
 
 def random_string(length = 10):
     """Generate a random string of fixed length """
@@ -42,8 +43,16 @@ def new_image_path():
 		path = os.path.join("images", random_string() + ".png")
 	return path
 
+def ensure_origin(request, response):
+	origin = request.query['origin']
+	if origin not in origins: return
+	response.headers['Access-Control-Allow-Origin'] = origin
+	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
 @get('/latex')
 def latex():
+	ensure_origin(request, response)
 	try:
 		expression = request.query['expression']
 		element = expressions.find_one({"_id": expression})
@@ -59,7 +68,8 @@ def latex():
 		return {"error": traceback.format_exc()}
 
 @get('/images/<filename>')
-def server_static(filename):
+def get_image(filename):
+	ensure_origin(request, response)
 	return static_file(filename, root='images')
 
 # Create our own sub-class of Bottle's ServerAdapter
