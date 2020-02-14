@@ -35,9 +35,8 @@ def random_string(length = 10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
-if not os.path.isdir("images"): os.makedirs("images")
-
 def new_image_path():
+	if not os.path.isdir("images"): os.makedirs("images")
 	path = None
 	while path is None or os.path.isfile(path):
 		path = os.path.join("images", random_string() + ".png")
