@@ -19,6 +19,11 @@ client = pymongo.MongoClient()
 db = client['latex']
 expressions = db["expressions"]
 
+with open("config.json", "r") as file: config = json.load(file)
+server_name = config["server"]
+certfile_path = config["certfile"]
+keyfile_path = config["keyfile"]
+
 def random_string(length = 10):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
@@ -52,4 +57,4 @@ def latex():
 def server_static(filename):
 	return static_file(filename, root='images')
 
-run(host = "0.0.0.0", port = 80)
+run(host = "0.0.0.0", port = 80, server = server_name, certfile = certfile_path, keyfile = keyfile_path)
