@@ -57,4 +57,4 @@ def latex():
 def server_static(filename):
 	return static_file(filename, root='images')
 
-run(host = "0.0.0.0", port = 80, server = server_name, certfile = certfile_path, keyfile = keyfile_path)
+run(host = "0.0.0.0", port = 443, server = server_name, certfile = certfile_path, keyfile = keyfile_path)
