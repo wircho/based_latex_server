@@ -136,3 +136,4 @@ dmypy.json
 # logs and images
 logs/
 images/
+nohup.out
