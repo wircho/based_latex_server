@@ -7,7 +7,12 @@ import logging.handlers
 import traceback
 import pymongo
 from based_latex import save_latex_image
-from bottle import run, get, post, request, static_file
+from bottle import run, get, post, request, static_file, ServerAdapter, default_app
+from cheroot import wsgi
+from cheroot.ssl.builtin import BuiltinSSLAdapter
+import ssl
+
+# Tips from https://github.com/nickbabcock/bottle-ssl/blob/master/main.py
 
 handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
 handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
@@ -57,4 +62,42 @@ def latex():
 def server_static(filename):
 	return static_file(filename, root='images')
 
-run(host = "0.0.0.0", port = 443, server = server_name, certfile = certfile_path, keyfile = keyfile_path)
+# Create our own sub-class of Bottle's ServerAdapter
+# so that we can specify SSL. Using just server='cherrypy'
+# uses the default cherrypy server, which doesn't use SSL
+class SSLCherryPyServer(ServerAdapter):
+	def run(self, handler):
+		server = wsgi.Server((self.host, self.port), handler)
+		server.ssl_adapter = BuiltinSSLAdapter(certfile_path, keyfile_path)
+
+		# By default, the server will allow negotiations with extremely old protocols
+		# that are susceptible to attacks, so we only allow TLSv1.2
+		server.ssl_adapter.context.options |= ssl.OP_NO_TLSv1
+		server.ssl_adapter.context.options |= ssl.OP_NO_TLSv1_1
+
+		try: server.start()
+		finally: server.stop()
+
+# # define beaker options
+# # -Each session data is stored inside a file located inside a
+# #  folder called data that is relative to the working directory
+# # -The cookie expires at the end of the browser session
+# # -The session will save itself when accessed during a request
+# #  so save() method doesn't need to be called
+# session_opts = {
+#     "session.type": "file",
+#     "session.cookie_expires": True,
+#     "session.data_dir": "./data",
+#     "session.auto": True,
+# }
+
+# # Create the default bottle app and then wrap it around
+# # a beaker middleware and send it back to bottle to run
+# app = SessionMiddleware(default_app(), session_opts)
+
+if __name__ == "__main__":
+    # run(app=app, host="0.0.0.0", port=443, server=SSLCherryPyServer)
+    run(host = "0.0.0.0", port = 443, server = SSLCherryPyServer)
+
+# # old:
+# run(host = "0.0.0.0", port = 443, server = server_name, certfile = certfile_path, keyfile = keyfile_path)

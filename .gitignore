@@ -133,8 +133,9 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
-# logs, configs, and images
+# logs, configs, session data, and images
 logs/
 images/
 nohup.out
 config.json
+data/
