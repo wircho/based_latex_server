@@ -44,7 +44,7 @@ def new_image_path():
 	return path
 
 def ensure_origin(request, response):
-	origin = request.get('origin')
+	origin = request.query.get('origin')
 	print("Origin is " + str(origin) + ". Finding in " + str(origins) + "...")
 	if origin not in origins: return
 	print("Found!")
