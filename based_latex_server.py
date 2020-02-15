@@ -55,16 +55,13 @@ def latex():
 	try:
 		expression = request.query['expression']
 		element = expressions.find_one({"_id": expression})
-		if element is not None:
-			return element
-		else:
+		if element is None:
 			path = new_image_path()
-			prefix, suffix = save_latex_image(expression, path)
-			element = {"_id": expression, "prefix": prefix, "suffix": suffix, "path": path}
+			data = save_latex_image(expression, path)
+			element = {"_id": expression, "data": data, "path": path}
 			expressions.insert(element)
-			return element
-	except:
-		return {"error": traceback.format_exc()}
+		return element
+	except: return {"error": traceback.format_exc()}
 
 @get('/images/<filename>')
 def get_image(filename):
