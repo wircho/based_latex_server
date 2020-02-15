@@ -57,7 +57,7 @@ def latex():
 		element = expressions.find_one({"_id": expression})
 		if element is None:
 			path = new_image_path()
-			data = save_latex_image(expression, path)
+			data = save_latex_image(expression, path, density = 1024)
 			element = {"_id": expression, "data": data, "path": path}
 			expressions.insert(element)
 		return element
