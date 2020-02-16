@@ -45,6 +45,7 @@ def new_image_path():
 def ensure_origin(request, response):
 	print(request.headers.keys())
 	origin = request.headers.get('Origin')
+	print(origin)
 	if origin not in origins: return
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
