@@ -47,6 +47,7 @@ def ensure_origin(request, response):
 	origin = request.headers.get('Origin')
 	print(origin)
 	if origin not in origins: return
+	print("Good origin!")
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
 	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
