@@ -6,4 +6,3 @@ if __name__ == "__main__":
 	db = client['latex']
 	expressions = db["expressions"]
 	expressions.delete_many({})
-	shutil.rmtree("images")
