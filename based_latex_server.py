@@ -52,15 +52,7 @@ def ensure_origin(request, response):
 	print(request.headers.keys())
 	origin = request.headers.get('Origin')
 	referer = request.headers.get('Referer')
-	print(origin)
-	print(referer)
-	if origin not in origins and get_referer_origin(referer) not in origins:
-		print("NOT SENDING!")
-		response.headers['Access-Control-Allow-Origin'] = origins[0]
-		response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
-		response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-		return
-	print("Good origin!")
+	if origin not in origins and get_referer_origin(referer) not in origins: return
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
 	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
