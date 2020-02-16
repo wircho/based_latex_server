@@ -49,13 +49,17 @@ def get_referer_origin(referer):
 	return split.scheme + "://" + split.netloc
 
 def ensure_origin(request, response):
-	print(request.headers.keys())
 	origin = request.headers.get('Origin')
 	referer = request.headers.get('Referer')
 	if origin not in origins and get_referer_origin(referer) not in origins: return
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
 	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+def static_file_with_origin(filename, root = "./"):
+	res = static_file(filename, root = root)
+	ensure_origin(request, res)
+	return res
 
 @get('/latex')
 def latex():
@@ -72,10 +76,7 @@ def latex():
 	except: return {"error": traceback.format_exc()}
 
 @get('/images/<filename>')
-def get_image(filename):
-	res = static_file(filename, root='images')
-	ensure_origin(request, res)
-	return res
+def get_image(filename): return static_file_with_origin(filename, root = 'images')
 
 @get('/fonts.css')
 def get_fonts_css():
@@ -91,10 +92,7 @@ def get_fonts_css():
 	return "\n".join(css)
 
 @get('/font/<filename>')
-def get_font(filename):
-	res = static_file(filename, root='fonts')
-	ensure_origin(request, res)
-	return res
+def get_font(filename): return static_file_with_origin(filename, root = 'fonts')
 
 
 # Create our own sub-class of Bottle's ServerAdapter
