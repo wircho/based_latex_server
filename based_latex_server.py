@@ -84,14 +84,14 @@ def get_fonts_css():
 	response.headers['Content-Type'] = "text/css"
 	font_names = [os.path.splitext(name)[0] for name in os.listdir("fonts") if os.path.splitext(name)[1] == ".ttf"]
 	css = [f"""
-	@font-face {{
-    font-family:{name.upper()};
-    src:url(https://api.interoper.io/font/{name}.ttf);
-  }}
+@font-face {{
+  font-family:{name.upper()};
+  src:url(https://api.interoper.io/fonts/{name}.ttf);
+}}
 	""" for name in font_names]
 	return "\n".join(css)
 
-@get('/font/<filename>')
+@get('/fonts/<filename>')
 def get_font(filename): return static_file_with_origin(filename, root = 'fonts')
 
 
