@@ -81,8 +81,9 @@ def latex():
 
 @get('/images/<filename>')
 def get_image(filename):
-	ensure_origin(request, response)
-	return static_file(filename, root='images')
+	res = static_file(filename, root='images')
+	ensure_origin(request, res)
+	return res
 
 @get('/fonts.css')
 def get_fonts_css():
@@ -99,8 +100,9 @@ def get_fonts_css():
 
 @get('/font/<filename>')
 def get_font(filename):
-	ensure_origin(request, response)
-	return static_file(filename, root='fonts')
+	res = static_file(filename, root='fonts')
+	ensure_origin(request, res)
+	return res
 
 
 # Create our own sub-class of Bottle's ServerAdapter
