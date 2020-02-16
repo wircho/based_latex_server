@@ -11,6 +11,7 @@ from bottle import run, get, post, request, response, static_file, ServerAdapter
 from cheroot import wsgi
 from cheroot.ssl.builtin import BuiltinSSLAdapter
 import ssl
+from urllib.parse import urlsplit
 
 # Tips from https://github.com/nickbabcock/bottle-ssl/blob/master/main.py
 
@@ -42,13 +43,18 @@ def new_image_path():
 		path = os.path.join("images", random_string() + ".png")
 	return path
 
+def get_referer_origin(referer):
+	if referer is None: return None
+	split = urlsplit(referer)
+	return split.scheme + "://" + split.netloc
+
 def ensure_origin(request, response):
 	print(request.headers.keys())
 	origin = request.headers.get('Origin')
 	referer = request.headers.get('Referer')
 	print(origin)
 	print(referer)
-	if origin not in origins: return
+	if origin not in origins and get_referer_origin(referer) not in origins: return
 	print("Good origin!")
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
