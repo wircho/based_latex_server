@@ -36,11 +36,11 @@ def random_string(length = 10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
-def new_image_path():
+def new_image_path(ext):
 	if not os.path.isdir("images"): os.makedirs("images")
 	path = None
 	while path is None or os.path.isfile(path):
-		path = os.path.join("images", random_string() + ".png")
+		path = os.path.join("images", random_string() + ext)
 	return path
 
 def get_referer_origin(referer):
@@ -68,12 +68,12 @@ def latex():
 		expression = request.query['expression']
 		element = expressions.find_one({"_id": expression})
 		if element is None:
-			# path = new_image_path()
-			data = save_latex_image(expression)
+			path = new_image_path(".sgv")
+			data = save_latex_image(expression, path)
 			element = {
 				"_id": expression,
 				"data": data,
-				# "path": path
+				"path": path
 			}
 			expressions.insert(element)
 		return element
