@@ -68,7 +68,7 @@ def latex():
 		expression = request.query['expression']
 		element = expressions.find_one({"_id": expression})
 		if element is None:
-			path = new_image_path(".sgv")
+			path = new_image_path(".svg")
 			data = save_latex_image(expression, path)
 			element = {
 				"_id": expression,
