@@ -58,8 +58,11 @@ def static_file_with_origin(filename, root = "./"):
 
 @get('/quit')
 def quit():
-	with open("action_tokens.json", "r") as file: tokens = json.load(file)
-	if tokens["quit"] != request.query["token"]: return {"error": "Bad token."}
+	tokens = None
+	try:
+		with open("action_tokens.json", "r") as file: tokens = json.load(file)
+	except: pass
+	if tokes is None or tokens["quit"] != request.query["token"]: return {"error": "Bad token."}
 	exit()
 
 @get('/latex')
