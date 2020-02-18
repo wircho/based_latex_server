@@ -1,7 +1,6 @@
 import os
 import json
 import logging
-import random
 import string
 import logging.handlers
 import traceback
@@ -12,6 +11,7 @@ from cheroot import wsgi
 from cheroot.ssl.builtin import BuiltinSSLAdapter
 import ssl
 from urllib.parse import urlsplit
+from utils import random_string
 
 # Tips from https://github.com/nickbabcock/bottle-ssl/blob/master/main.py
 
@@ -30,11 +30,6 @@ server_name = config["server"]
 certfile_path = config["certfile"]
 keyfile_path = config["keyfile"]
 origins = config["origins"]
-
-def random_string(length = 10):
-    """Generate a random string of fixed length """
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(length))
 
 def new_image_path(ext):
 	if not os.path.isdir("images"): os.makedirs("images")
@@ -60,6 +55,12 @@ def static_file_with_origin(filename, root = "./"):
 	res = static_file(filename, root = root)
 	ensure_origin(request, res)
 	return res
+
+@get('/quit')
+def quit():
+	with open("action_tokens.json", "r") as file: tokens = json.load(file)
+	if tokens["quit"] != request.query["token"]: return {"error": "Bad token."}
+	exit()
 
 @get('/latex')
 def latex():

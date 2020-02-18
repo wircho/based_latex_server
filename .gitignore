@@ -139,3 +139,4 @@ images/
 nohup.out
 config.json
 data/
+action_tokens.json
