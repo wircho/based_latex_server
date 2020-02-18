@@ -62,7 +62,7 @@ def quit():
 	try:
 		with open("action_tokens.json", "r") as file: tokens = json.load(file)
 	except: pass
-	if tokes is None or tokens["quit"] != request.query["token"]: return {"error": "Bad token."}
+	if tokens is None or tokens["quit"] != request.query["token"]: return {"error": "Bad token."}
 	exit()
 
 @get('/latex')
