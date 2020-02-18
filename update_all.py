@@ -8,6 +8,6 @@ with open("action_tokens.json", "w") as file: file.write('{"quit": "' + token + 
 subprocess.run(["curl", "https://api.interoper.io/quit?token=" + token])
 os.remove("action_tokens.json")
 subprocess.run(["git", "pull", "origin", "master"])
-for _ in range(2): subprocess.run(["/home/ubuntu/anaconda3/envs/latex/bin/pip", "install", "based_latex", "--upgrade"])
-subprocess.run(["nohup", "/home/ubuntu/anaconda3/envs/latex/bin/python", "based_latex_server.py", "2>&1", "</dev/null", "&"])
+for _ in range(2): subprocess.run(["pip", "install", "based_latex", "--upgrade"])
+subprocess.run(["sudo", "nohup", "/home/ubuntu/anaconda3/envs/latex/bin/python", "based_latex_server.py", "2>&1", "</dev/null", "&"])
 subprocess.run(["ps", "-fA", "|", "grep", "python"])
