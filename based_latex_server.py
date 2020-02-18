@@ -6,7 +6,7 @@ import string
 import logging.handlers
 import traceback
 import pymongo
-from based_latex import save_latex_image
+from based_latex import get_latex_svg_data
 from bottle import run, get, post, request, response, static_file, ServerAdapter, default_app
 from cheroot import wsgi
 from cheroot.ssl.builtin import BuiltinSSLAdapter
@@ -68,12 +68,12 @@ def latex():
 		expression = request.query['expression']
 		element = expressions.find_one({"_id": expression})
 		if element is None:
-			path = new_image_path(".svg")
-			data = save_latex_image(expression, path)
+			# path = new_image_path(".svg")
+			data = get_latex_svg_data(expression)
 			element = {
 				"_id": expression,
-				"data": data,
-				"path": path
+				"data": data#,
+				#"path": path
 			}
 			expressions.insert(element)
 		return element
