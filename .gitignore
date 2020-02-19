@@ -136,6 +136,7 @@ dmypy.json
 # logs, configs, session data, and images
 logs/
 images/
+assets/
 nohup.out
 config.json
 data/
