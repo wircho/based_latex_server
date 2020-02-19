@@ -82,6 +82,9 @@ def latex():
 		return element
 	except: return {"error": traceback.format_exc()}
 
+@get('/assets/<filename>')
+def get_image(filename): return static_file_with_origin(filename, root = 'assets')
+
 @get('/images/<filename>')
 def get_image(filename): return static_file_with_origin(filename, root = 'images')
 
