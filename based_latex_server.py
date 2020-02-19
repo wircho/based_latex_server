@@ -90,18 +90,18 @@ def get_image(filename): return static_file_with_origin(filename, root = 'assets
 @get('/images/<filename>')
 def get_image(filename): return static_file_with_origin(filename, root = 'images')
 
-@get('/fonts.css')
-def get_fonts_css():
-	ensure_origin(request, response)
-	response.headers['Content-Type'] = "text/css"
-	font_names = [os.path.splitext(name)[0] for name in os.listdir("fonts") if os.path.splitext(name)[1] == ".ttf"]
-	css = [f"""
-@font-face {{
-  font-family:{name.upper()};
-  src:url(https://api.interoper.io/fonts/{name}.ttf);
-}}
-	""" for name in font_names]
-	return "\n".join(css)
+# @get('/fonts.css')
+# def get_fonts_css():
+# 	ensure_origin(request, response)
+# 	response.headers['Content-Type'] = "text/css"
+# 	font_names = [os.path.splitext(name)[0] for name in os.listdir("fonts") if os.path.splitext(name)[1] == ".ttf"]
+# 	css = [f"""
+# @font-face {{
+#   font-family:{name.upper()};
+#   src:url(https://api.interoper.io/fonts/{name}.ttf);
+# }}
+# 	""" for name in font_names]
+# 	return "\n".join(css)
 
 @get('/fonts/<filename>')
 def get_font(filename): return static_file_with_origin(filename, root = 'fonts')
