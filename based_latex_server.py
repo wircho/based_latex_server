@@ -69,12 +69,14 @@ def latex():
 	ensure_origin(request, response)
 	try:
 		expression = request.query['expression']
-		element = expressions.find_one({"_id": expression})
+		is_math = int(request.query.get('is_math', '0')) != 0
+		_id = ("" if is_math else "<non-math>") + expression
+		element = expressions.find_one({"_id": _id})
 		if element is None:
 			# path = new_image_path(".svg")
-			data = get_latex_svg_data(expression)
+			data = get_latex_svg_data(expression, is_math = is_math)
 			element = {
-				"_id": expression,
+				"_id": _id,
 				"data": data#,
 				#"path": path
 			}
