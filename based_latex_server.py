@@ -69,6 +69,7 @@ def latex():
 	ensure_origin(request, response)
 	try:
 		expression = request.query['expression']
+		print(expression)
 		is_math = int(request.query.get('is_math', '0')) != 0
 		_id = ("" if is_math else "<non-math>") + expression
 		element = expressions.find_one({"_id": _id})
