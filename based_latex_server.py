@@ -14,11 +14,11 @@ from utils import random_string
 
 # Tips from https://github.com/nickbabcock/bottle-ssl/blob/master/main.py
 
-handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
-handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
+# handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
+# handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+# logger = logging.getLogger()
+# logger.setLevel(logging.INFO)
+# logger.addHandler(handler)
 
 client = pymongo.MongoClient()
 db = client['latex']
