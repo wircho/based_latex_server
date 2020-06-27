@@ -12,6 +12,12 @@ import ssl
 from urllib.parse import urlsplit
 from utils import random_string
 
+log_file_name = "logs.txt"
+
+def add_log(text):
+	with open(log_file_name, "a+") as file: file.write(f"{text}\n")
+
+
 # Tips from https://github.com/nickbabcock/bottle-ssl/blob/master/main.py
 
 # handler = logging.handlers.RotatingFileHandler("logs/python.log", mode = "a", maxBytes = 5000000, backupCount = 0)
@@ -31,28 +37,36 @@ keyfile_path = config["keyfile"]
 origins = config["origins"]
 
 def new_image_path(ext):
+	add_log("Creating new image path...")
 	if not os.path.isdir("images"): os.makedirs("images")
 	path = None
 	while path is None or os.path.isfile(path):
 		path = os.path.join("images", random_string() + ext)
+	add_log(f"Created new image path {path}")
 	return path
 
 def get_referer_origin(referer):
+	add_log("Getting referer origin...")
 	if referer is None: return None
 	split = urlsplit(referer)
+	add_log(f"Got referer origin {split.scheme}://{split.netloc}")
 	return split.scheme + "://" + split.netloc
 
 def ensure_origin(request, response):
+	add_log("Ensuring origin...")
 	origin = request.headers.get('Origin')
 	referer = request.headers.get('Referer')
 	if origin not in origins and get_referer_origin(referer) not in origins: return
 	response.headers['Access-Control-Allow-Origin'] = origin
 	response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
 	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+	add_log("Added origin headers.")
 
 def static_file_with_origin(filename, root = "./"):
+	add_log(f"Getting static file {filename} at root {root}...")
 	res = static_file(filename, root = root)
 	ensure_origin(request, res)
+	add_log("Got requested static file.")
 	return res
 
 @get('/quit')
@@ -66,24 +80,33 @@ def quit():
 
 @get('/latex')
 def latex():
+	add_log("GET /latex")
 	ensure_origin(request, response)
 	try:
 		expression = request.query['expression']
 		print(expression)
+		add_log(f"Requested expression {expression}...")
 		is_math = int(request.query.get('is_math', '0')) != 0
 		_id = ("" if is_math else "<non-math>") + expression
 		element = expressions.find_one({"_id": _id})
 		if element is None:
 			# path = new_image_path(".svg")
+			add_log(f"Getting svg data...")
 			data = get_latex_svg_data(expression, is_math = is_math)
+			add_log("Got svg data.")
 			element = {
 				"_id": _id,
 				"data": data#,
 				#"path": path
 			}
+			add_log("Inserting into expressions.")
 			expressions.insert(element)
+			add_log("Inserted into expressions.")
 		return element
-	except: return {"error": traceback.format_exc()}
+	except:
+		tb = traceback.format_exc()
+		add_log(f"Got error\n{tb}")
+		return {"error": tb}
 
 @get('/assets/<filename>')
 def get_image(filename): return static_file_with_origin(filename, root = 'assets')
